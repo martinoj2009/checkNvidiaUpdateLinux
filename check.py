@@ -21,11 +21,24 @@ def is_connected():
 
 def getGPU():
     output = os.popen('lspci | grep -i vga | grep -i nvidia').read()
+
+    #Check if an Nvidia GPU was returned
+    if output.strip(" ") == "":
+        print("Didn't detect an Nvidia GPU on your system.")
+        exit()
+
     output = output.split('[')[1].split(']')[0]
     return output
 
 def getCurrentVersion():
     output = os.popen('nvidia-smi | grep Version').read()
+
+    #Make sure string isn't empty
+    if output.strip(" ") == "":
+        print("Can't get the current version. Make sure you have nvidia-smi installed.")
+        exit()
+
+
     output = output.split("Version:")[1].split('|')[0].strip(" ")
     return output
 
@@ -38,6 +51,11 @@ def getLatestVersion():
         if "Version" in lines.decode("utf-8"):
             versions.append(lines.decode("utf-8"))
 
+    #make sure the version isn't empty
+    if versions[0].strip(" ") == "":
+        print("Wasn't able to get the latest version from Nvidia wesbite.")
+        exit()
+        
     return versions[0].split("Version:")[1].split("<br>")[0].strip(" ")
 
 
